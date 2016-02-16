@@ -18,3 +18,5 @@ from flat_file import FlatFileAuthenticationBackend
 __all__ = [
     'FlatFileAuthenticationBackend'
 ]
+
+__version__ = '0.1.0'
