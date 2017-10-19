@@ -23,33 +23,6 @@ __all__ = [
 
 LOG = logging.getLogger(__name__)
 
-COMMENT_MARKER = '**COMMENTIGNORE**'
-
-
-class HttpasswdFileWithComments(HtpasswdFile):
-    """
-    Custom HtpasswdFile implementation which supports comments (lines starting
-    with #).
-    """
-
-    def _load_lines(self, lines):
-        result = super(HttpasswdFileWithComments, self)._load_lines(lines=lines)
-
-        # Filter out comments
-        self._records.pop(COMMENT_MARKER, None)
-        assert COMMENT_MARKER not in self._records
-
-        return result
-
-    def _parse_record(self, record, lineno):
-        if record.startswith('#'):
-            # Comment, add special marker so we can filter it out later
-            return (COMMENT_MARKER, None)
-
-        result = super(HttpasswdFileWithComments, self)._parse_record(record=record,
-                                                                      lineno=lineno)
-        return result
-
 
 class FlatFileAuthenticationBackend(object):
     """
@@ -70,7 +43,7 @@ class FlatFileAuthenticationBackend(object):
         self._file_path = file_path
 
     def authenticate(self, username, password):
-        htpasswd_file = HttpasswdFileWithComments(path=self._file_path)
+        htpasswd_file = HtpasswdFile(path=self._file_path)
         result = htpasswd_file.check_password(username, password)
 
         if result is None:
