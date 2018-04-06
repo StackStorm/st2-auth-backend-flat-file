@@ -23,8 +23,9 @@ GET_PIP = 'curl https://bootstrap.pypa.io/get-pip.py | python'
 try:
     import pip
     from pip.req import parse_requirements
-except ImportError:
+except ImportError as e:
     print('Download pip:\n', GET_PIP)
+    print(str(e))
     sys.exit(1)
 
 __all__ = [
