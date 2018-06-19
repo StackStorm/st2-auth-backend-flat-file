@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flat_file import FlatFileAuthenticationBackend
+from __future__ import absolute_import
+
+from .flat_file import FlatFileAuthenticationBackend
 
 __all__ = [
     'FlatFileAuthenticationBackend'
