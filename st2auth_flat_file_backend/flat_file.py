@@ -42,7 +42,7 @@ class HttpasswdFileWithComments(HtpasswdFile):
         return result
 
     def _parse_record(self, record, lineno):
-        if record.startswith('#'):
+        if record.startswith(b'#'):
             # Comment, add special marker so we can filter it out later
             return (COMMENT_MARKER, None)
 
