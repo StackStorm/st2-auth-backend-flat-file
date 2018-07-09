@@ -20,7 +20,7 @@ Please refer to the authentication section in the StackStorm
 following is an example of the auth section in the StackStorm configuration file for the flat-file
 backend.
 
-```
+```ini
 [auth]
 mode = standalone
 backend = flat_file
