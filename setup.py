@@ -43,7 +43,6 @@ setup(
     author='StackStorm, Inc.',
     author_email='info@stackstorm.com',
     url='https://github.com/StackStorm/st2-auth-backend-flat-file',
-    license='Apache License (2.0)',
     download_url='https://github.com/StackStorm/st2-auth-backend-flat-file/tarball/master',
     classifiers=[
         'Development Status :: 3 - Alpha',
