@@ -31,14 +31,18 @@ INIT_FILE = os.path.join(BASE_DIR, 'st2auth_flat_file_backend', '__init__.py')
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='st2-auth-backend-flat-file',
     version=version,
     description='StackStorm authentication backend which reads credentials from a htpasswd compatible file on disk.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='StackStorm, Inc.',
     author_email='info@stackstorm.com',
     url='https://github.com/StackStorm/st2-auth-backend-flat-file',
-    license='Apache License (2.0)',
     download_url='https://github.com/StackStorm/st2-auth-backend-flat-file/tarball/master',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -47,7 +51,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Intended Audience :: Developers',
         'Environment :: Console',
     ],
