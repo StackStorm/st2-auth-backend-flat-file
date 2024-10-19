@@ -59,7 +59,6 @@ setup(
     include_package_data=True,
     install_requires=install_reqs,
     dependency_links=dep_links,
-    test_suite='tests',
     entry_points={
         'st2auth.backends.backend': [
             'flat_file = st2auth_flat_file_backend.flat_file:FlatFileAuthenticationBackend',
