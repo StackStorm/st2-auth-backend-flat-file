@@ -33,13 +33,11 @@ class HttpasswdFileWithComments(HtpasswdFile):
     """
 
     def _load_lines(self, lines):
-        result = super(HttpasswdFileWithComments, self)._load_lines(lines=lines)
+        super(HttpasswdFileWithComments, self)._load_lines(lines=lines)
 
         # Filter out comments
         self._records.pop(COMMENT_MARKER, None)
         assert COMMENT_MARKER not in self._records
-
-        return result
 
     def _parse_record(self, record, lineno):
         if record.startswith(b'#'):
