@@ -43,7 +43,7 @@ jobs:
 
     - name: Select tox env
       id: tox-env
-      run: echo tox-env=py${{ matrix.python-version }} | tr . '' >> ${GITHUB_OUTPUT}
+      run: echo tox-env=py${{ matrix.python-version }} | tr -d '.' >> ${GITHUB_OUTPUT}
 
     - name: Test
       run: tox -e ${{ steps.tox-env.outputs.tox-env }}
