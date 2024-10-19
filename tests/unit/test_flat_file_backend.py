@@ -16,14 +16,14 @@
 import os
 import sys
 
-import unittest2
+import unittest
 
 from st2auth_flat_file_backend.flat_file import FlatFileAuthenticationBackend
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class FlatFileAuthenticationBackendTestCase(unittest2.TestCase):
+class FlatFileAuthenticationBackendTestCase(unittest.TestCase):
     def test_authenticate_httpasswd_file_without_comments(self):
         file_path = os.path.join(BASE_DIR, '../fixtures/htpasswd_test')
         backend = FlatFileAuthenticationBackend(file_path=file_path)
@@ -69,4 +69,4 @@ class FlatFileAuthenticationBackendTestCase(unittest2.TestCase):
         self.assertRaises(IOError, backend.authenticate, username='doesntexist', password='bar')
 
 if __name__ == '__main__':
-    sys.exit(unittest2.main())
+    sys.exit(unittest.main())

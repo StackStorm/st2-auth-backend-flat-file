@@ -3,4 +3,3 @@ pep8==1.7.1
 pylint~=3.1.0
 pytest
 st2flake8
-unittest2
