@@ -14,16 +14,29 @@
 # limitations under the License.
 
 import logging
+import hashlib
 
-from passlib.apache import HtpasswdFile
+# empirical format for htpasswd using apache utils 2.4.41
+# md5sum:$apr1$AmfEURVX$U0A7kxYcofNn2J.lptuOn0
+# bcrypt:$2y$05$LtdiiELPayMNfwk5PMWA2uOMNAWW9wacCrYgN.lXUR35YEG.kOPWO
+# crypt:znExVsGU19vAQ
+# sha:{SHA}C5wmJdwh7wX2rU3fR8XyA4N6oyw=
+# plain:toto
 
-__all__ = [
-    'FlatFileAuthenticationBackend'
-]
+
+try:
+    from passlib.apache import HtpasswdFile
+except ModuleNotFoundError:
+    try:
+        import bcrypt
+    except Exception as e:
+        raise e
+
+__all__ = ["FlatFileAuthenticationBackend"]
 
 LOG = logging.getLogger(__name__)
 
-COMMENT_MARKER = '**COMMENTIGNORE**'
+COMMENT_MARKER = "**COMMENTIGNORE**"
 
 
 class HttpasswdFileWithComments(HtpasswdFile):
@@ -40,12 +53,11 @@ class HttpasswdFileWithComments(HtpasswdFile):
         assert COMMENT_MARKER not in self._records
 
     def _parse_record(self, record, lineno):
-        if record.startswith(b'#'):
+        if record.startswith(b"#"):
             # Comment, add special marker so we can filter it out later
             return (COMMENT_MARKER, None)
 
-        result = super(HttpasswdFileWithComments, self)._parse_record(record=record,
-                                                                      lineno=lineno)
+        result = super(HttpasswdFileWithComments, self)._parse_record(record=record, lineno=lineno)
         return result
 
 

@@ -25,48 +25,49 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class FlatFileAuthenticationBackendTestCase(unittest.TestCase):
     def test_authenticate_httpasswd_file_without_comments(self):
-        file_path = os.path.join(BASE_DIR, '../fixtures/htpasswd_test')
+        file_path = os.path.join(BASE_DIR, "../fixtures/htpasswd_test")
         backend = FlatFileAuthenticationBackend(file_path=file_path)
 
         # Inexistent user
-        self.assertFalse(backend.authenticate(username='doesntexist', password='bar'))
+        self.assertFalse(backend.authenticate(username="doesntexist", password="bar"))
 
         # Invalid password
-        self.assertFalse(backend.authenticate(username='test1', password='bar'))
+        self.assertFalse(backend.authenticate(username="test1", password="bar"))
 
         # Valid password (md5 hash)
-        self.assertTrue(backend.authenticate(username='test1', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test1", password="testpassword"))
 
         # Valid password (sha hash - insecure)
-        self.assertTrue(backend.authenticate(username='test3', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test3", password="testpassword"))
 
         # Valid password (crypt - insecure)
-        self.assertTrue(backend.authenticate(username='test4', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test4", password="testpassword"))
 
     def test_authenticate_httpasswd_file_with_comments(self):
-        file_path = os.path.join(BASE_DIR, '../fixtures/htpasswd_test_with_comments')
+        file_path = os.path.join(BASE_DIR, "../fixtures/htpasswd_test_with_comments")
         backend = FlatFileAuthenticationBackend(file_path=file_path)
 
         # Inexistent user
-        self.assertFalse(backend.authenticate(username='doesntexist', password='bar'))
+        self.assertFalse(backend.authenticate(username="doesntexist", password="bar"))
 
         # Invalid password
-        self.assertFalse(backend.authenticate(username='test1', password='bar'))
+        self.assertFalse(backend.authenticate(username="test1", password="bar"))
 
         # Valid password (md5 hash)
-        self.assertTrue(backend.authenticate(username='test1', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test1", password="testpassword"))
 
         # Valid password (sha hash - insecure)
-        self.assertTrue(backend.authenticate(username='test3', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test3", password="testpassword"))
 
         # Valid password (crypt - insecure)
-        self.assertTrue(backend.authenticate(username='test4', password='testpassword'))
+        self.assertTrue(backend.authenticate(username="test4", password="testpassword"))
 
     def test_authenticate_httpasswd_file_doesnt_exist(self):
-        file_path = os.path.join(BASE_DIR, '../fixtures/htpasswd_doesnt_exist')
+        file_path = os.path.join(BASE_DIR, "../fixtures/htpasswd_doesnt_exist")
         backend = FlatFileAuthenticationBackend(file_path=file_path)
 
-        self.assertRaises(IOError, backend.authenticate, username='doesntexist', password='bar')
+        self.assertRaises(IOError, backend.authenticate, username="doesntexist", password="bar")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(unittest.main())

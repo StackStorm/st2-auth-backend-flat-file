@@ -22,8 +22,8 @@ from dist_utils import fetch_requirements
 from dist_utils import parse_version_string
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-REQUIREMENTS_FILE = os.path.join(BASE_DIR, 'requirements.txt')
-INIT_FILE = os.path.join(BASE_DIR, 'st2auth_flat_file_backend', '__init__.py')
+REQUIREMENTS_FILE = os.path.join(BASE_DIR, "requirements.txt")
+INIT_FILE = os.path.join(BASE_DIR, "st2auth_flat_file_backend", "__init__.py")
 
 version = parse_version_string(INIT_FILE)
 install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
@@ -32,40 +32,40 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='st2-auth-backend-flat-file',
+    name="st2-auth-backend-flat-file",
     version=version,
-    description='StackStorm authentication backend which reads credentials from a htpasswd compatible file on disk.',
+    description="StackStorm authentication backend which reads credentials from a htpasswd compatible file on disk.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='StackStorm, Inc.',
-    author_email='info@stackstorm.com',
-    url='https://github.com/StackStorm/st2-auth-backend-flat-file',
-    license='Apache License (2.0)',
-    download_url='https://github.com/StackStorm/st2-auth-backend-flat-file/tarball/master',
+    author="StackStorm, Inc.",
+    author_email="info@stackstorm.com",
+    url="https://github.com/StackStorm/st2-auth-backend-flat-file",
+    license="Apache License (2.0)",
+    download_url="https://github.com/StackStorm/st2-auth-backend-flat-file/tarball/master",
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Intended Audience :: Developers',
-        'Environment :: Console',
+        "Development Status :: 3 - Alpha",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Intended Audience :: Developers",
+        "Environment :: Console",
     ],
-    python_requires='>=3.8',
-    platforms=['Any'],
+    python_requires=">=3.8",
+    platforms=["Any"],
     scripts=[],
-    provides=['st2auth_flat_file_backend'],
+    provides=["st2auth_flat_file_backend"],
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_reqs,
     dependency_links=dep_links,
     entry_points={
-        'st2auth.backends.backend': [
-            'flat_file = st2auth_flat_file_backend.flat_file:FlatFileAuthenticationBackend',
+        "st2auth.backends.backend": [
+            "flat_file = st2auth_flat_file_backend.flat_file:FlatFileAuthenticationBackend",
         ],
     },
-    zip_safe=False
+    zip_safe=False,
 )
