@@ -14,51 +14,97 @@
 # limitations under the License.
 
 import logging
+import locale
+import bcrypt
+import base64
 import hashlib
+import apr1
+import crypt  # deprecated in 3.11 and removed in 3.13.
+from hmac import compare_digest as compare_hash
+
+# Reference:    https://httpd.apache.org/docs/2.4/misc/password_encryptions.html
+#               https://akkadia.org/drepper/SHA-crypt.txt
 
 # empirical format for htpasswd using apache utils 2.4.41
 # md5sum:$apr1$AmfEURVX$U0A7kxYcofNn2J.lptuOn0
 # bcrypt:$2y$05$LtdiiELPayMNfwk5PMWA2uOMNAWW9wacCrYgN.lXUR35YEG.kOPWO
-# crypt:znExVsGU19vAQ
 # sha:{SHA}C5wmJdwh7wX2rU3fR8XyA4N6oyw=
+# crypt:znExVsGU19vAQ
 # plain:toto
-
-
-try:
-    from passlib.apache import HtpasswdFile
-except ModuleNotFoundError:
-    try:
-        import bcrypt
-    except Exception as e:
-        raise e
 
 __all__ = ["FlatFileAuthenticationBackend"]
 
 LOG = logging.getLogger(__name__)
 
-COMMENT_MARKER = "**COMMENTIGNORE**"
 
-
-class HttpasswdFileWithComments(HtpasswdFile):
+class HtpasswdFile(object):
     """
-    Custom HtpasswdFile implementation which supports comments (lines starting
-    with #).
+    Custom HtpasswdFile implementation which supports comments
+    (lines starting with #).
     """
 
-    def _load_lines(self, lines):
-        super(HttpasswdFileWithComments, self)._load_lines(lines=lines)
+    def __init__(self, filename):
+        self.filename = filename
+        self.entries = {}
+        self._load_file()
 
-        # Filter out comments
-        self._records.pop(COMMENT_MARKER, None)
-        assert COMMENT_MARKER not in self._records
+    def _load_file(self):
+        """
+        Load apache htpasswd formatted file with support for lines starting with "#"
+        as comments.  The format is a single line per record as <username>:<hash>
 
-    def _parse_record(self, record, lineno):
-        if record.startswith(b"#"):
-            # Comment, add special marker so we can filter it out later
-            return (COMMENT_MARKER, None)
+        Records are added to the 'entries' dictionary with the username as the key
+        and hash data as the value.
+        """
+        data = None
+        with open(self.filename, "r") as f:
+            data = f.readlines()
+        for line in data:
+            line = line.strip()
+            if line.startswith("#"):
+                LOG.debug(f"Skip comment {line}")
+                continue
+            if ":" not in line:
+                LOG.debug(f"Malformed entry '{line}'.")
+                continue
+            username, hash_data = line.split(":", 1)
+            self.entries[username] = hash_data
 
-        result = super(HttpasswdFileWithComments, self)._parse_record(record=record, lineno=lineno)
-        return result
+    def check_password(self, username, password):
+        if username in self.entries:
+            hash_data = self.entries[username]
+            encode_local = locale.getpreferredencoding()
+            pw = bytes(password, encoding=encode_local)
+            if hash_data.startswith("$apr1$"):
+                LOG.warning(
+                    "%s uses MD5 algorithm to hash the password."
+                    "Rehash the password with bcrypt is strongly recommended.",
+                    username,
+                )
+                _, _, salt, md5hash = hash_data.split("$")
+                return apr1.hash_apr1(salt, password) == hash_data
+            elif hash_data.startswith("$2y$"):
+                return bcrypt.checkpw(pw, bytes(hash_data, encoding=encode_local))
+            elif hash_data.startswith("{SHA}"):
+                LOG.warning(
+                    "%s uses deprecated SHA algorithm to hash password."
+                    "Rehash the password with bcrypt.",
+                    username,
+                )
+                return bytes(hash_data, encoding=encode_local) == b"{SHA}" + base64.b64encode(
+                    hashlib.sha1(pw).digest()
+                )
+            else:
+                # crypt is deprecated and will be dropped in python 3.13.
+                LOG.warning(
+                    "%s uses deprecated crypt algorithm to hash password."
+                    "Rehash the password with bcrypt.",
+                    username,
+                )
+                return compare_hash(crypt.crypt(password, hash_data), hash_data)
+        else:
+            # User not found.
+            return None
 
 
 class FlatFileAuthenticationBackend(object):
@@ -68,8 +114,6 @@ class FlatFileAuthenticationBackend(object):
     Entries need to be in a htpasswd file like format. This means entries can be managed with
     the htpasswd utility (https://httpd.apache.org/docs/current/programs/htpasswd.html) which
     ships with Apache HTTP server.
-
-    Note: This backends depends on the "passlib" library.
     """
 
     def __init__(self, file_path):
@@ -80,7 +124,7 @@ class FlatFileAuthenticationBackend(object):
         self._file_path = file_path
 
     def authenticate(self, username, password):
-        htpasswd_file = HttpasswdFileWithComments(path=self._file_path)
+        htpasswd_file = HtpasswdFile(self._file_path)
         result = htpasswd_file.check_password(username, password)
 
         if result is None:
