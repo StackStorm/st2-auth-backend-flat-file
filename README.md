@@ -1,11 +1,8 @@
 # Flat file authentication plugin for StackStorm Community edition
 
-[![Build Status](https://api.travis-ci.org/StackStorm/st2-auth-backend-flat-file.svg?branch=master)](https://travis-ci.org/StackStorm/st2-auth-backend-flat-file) [![IRC](https://img.shields.io/irc/%23stackstorm.png)](http://webchat.freenode.net/?channels=stackstorm)
+[![Tox CI](https://github.com/StackStorm/st2-auth-backend-flat-file/actions/workflows/tox.yaml/badge.svg)](https://github.com/StackStorm/st2-auth-backend-flat-file/actions/workflows/tox.yaml)
 
-Flat file backend supports reading credentials from an Apache HTTPd htpasswd formatted file. To
-manage this file you can use [htpasswd](https://httpd.apache.org/docs/2.2/programs/htpasswd.html)
-utility which comes with a standard Apache httpd distribution or by installing apache2-utils
-package on Ubuntu / Debian.
+Flat file backend supports reading credentials from an Apache HTTPd htpasswd formatted file. To manage this file you can use [htpasswd](https://httpd.apache.org/docs/2.2/programs/htpasswd.html) utility which comes with a standard Apache httpd distribution or by installing apache2-utils package on Ubuntu / Debian.
 
 ### Configuration Options
 
@@ -15,10 +12,7 @@ package on Ubuntu / Debian.
 
 ### Configuration Example
 
-Please refer to the authentication section in the StackStorm
-[documentation](http://docs.stackstorm.com) for basic setup concept. The
-following is an example of the auth section in the StackStorm configuration file for the flat-file
-backend.
+Please refer to the authentication section in the StackStorm [documentation](http://docs.stackstorm.com) for basic setup concept. The following is an example of the auth section in the StackStorm configuration file for the flat-file backend.
 
 ```ini
 [auth]
@@ -34,14 +28,15 @@ api_url = https://myhost.example.com:9101
 debug = False
 ```
 
-The following is an sample htpasswd command to generate a password file with a user entry.
+The following is an example htpasswd command to generate a password file with a user entry.  You should be using no other hashing algorithm than *bcrypt* as it is consider the only secure hashing algorithm amoung all the algorithms supported by htpasswd.
 
 ```
-htpasswd -cs /path/to/.htpasswd stark
+htpasswd -cB /path/to/.htpasswd stark
 ```
 
 ## Copyright, License, and Contributors Agreement
 
+Copyright 2025 StackStorm, Inc.
 Copyright 2015 StackStorm, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in
