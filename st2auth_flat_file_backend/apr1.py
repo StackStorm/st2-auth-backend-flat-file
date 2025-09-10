@@ -69,10 +69,8 @@
 #            bcrypt is currently the recommended algorithm.
 
 import os
-import sys
 
 from hashlib import md5
-from time import sleep
 
 
 def to64(data, n_out):
@@ -146,13 +144,12 @@ def hash_apr1(salt, password):
 
     pw_ascii = (
         to64(mkint(final, 0, 6, 12), 4)
-        + to64(mkint(final, 1, 7, 13), 4)
-        + to64(mkint(final, 2, 8, 14), 4)
-        + to64(mkint(final, 3, 9, 15), 4)
-        + to64(mkint(final, 4, 10, 5), 4)
-        + to64(mkint(final, 11), 2)
+        + to64(mkint(final, 1, 7, 13), 4)  # noqa: W503
+        + to64(mkint(final, 2, 8, 14), 4)  # noqa: W503
+        + to64(mkint(final, 3, 9, 15), 4)  # noqa: W503
+        + to64(mkint(final, 4, 10, 5), 4)  # noqa: W503
+        + to64(mkint(final, 11), 2)  # noqa: W503
     )
-
     return "$apr1$%s$%s" % (salt, pw_ascii)
 
 

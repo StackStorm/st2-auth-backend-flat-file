@@ -1,4 +1,4 @@
-## unreleased v3.9dev
+## unreleased 0.4.0
 
 ### Add
 
