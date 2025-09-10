@@ -22,3 +22,6 @@ ignored-modules=distutils,eventlet.green.subprocess
 max-line-length=100
 max-module-lines=1000
 indent-string='    '
+
+[MASTER]
+init-hook='import sys; sys.path.append("./st2auth_flat_file_backend")'
