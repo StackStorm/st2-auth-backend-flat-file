@@ -74,10 +74,10 @@ class HtpasswdFile(object):
             self.entries[username] = hash_data
 
     def check_password(self, username, password):
+        encode_local = locale.getpreferredencoding()
+        pw = bytes(password, encoding=encode_local)
         if username in self.entries:
             hash_data = self.entries[username]
-            encode_local = locale.getpreferredencoding()
-            pw = bytes(password, encoding=encode_local)
             if hash_data.startswith("$apr1$"):
                 LOG.warning(
                     "%s uses MD5 algorithm to hash the password."
