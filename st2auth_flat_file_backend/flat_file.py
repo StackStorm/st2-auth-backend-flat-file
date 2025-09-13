@@ -36,6 +36,9 @@ __all__ = ["FlatFileAuthenticationBackend"]
 
 LOG = logging.getLogger(__name__)
 
+# dummy pw is "testpassword" (used when user not found to avoid timing attacks)
+DUMMY_HASH_DATA = "$2y$05$Vhvhbk0SYN3ncn9BSvXEHunzztBWfrwqOpX1D0GhrFvM1TcADpKoO"
+
 
 class HtpasswdFile(object):
     """
@@ -71,10 +74,10 @@ class HtpasswdFile(object):
             self.entries[username] = hash_data
 
     def check_password(self, username, password):
+        encode_local = locale.getpreferredencoding()
+        pw = bytes(password, encoding=encode_local)
         if username in self.entries:
             hash_data = self.entries[username]
-            encode_local = locale.getpreferredencoding()
-            pw = bytes(password, encoding=encode_local)
             if hash_data.startswith("$apr1$"):
                 LOG.warning(
                     "%s uses MD5 algorithm to hash the password."
@@ -103,7 +106,8 @@ class HtpasswdFile(object):
                 )
                 return compare_hash(crypt.crypt(password, hash_data), hash_data)
         else:
-            # User not found.
+            # User not found. Do a dummy hash to avoid timing attacks.
+            _ = bcrypt.checkpw(pw, bytes(DUMMY_HASH_DATA, encoding=encode_local))
             return None
 
 
