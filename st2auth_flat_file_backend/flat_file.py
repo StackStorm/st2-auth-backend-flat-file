@@ -18,9 +18,10 @@ import locale
 import bcrypt
 import base64
 import hashlib
-import apr1
 import crypt  # deprecated in 3.11 and removed in 3.13.
 from hmac import compare_digest as compare_hash
+
+from . import apr1
 
 # Reference:    https://httpd.apache.org/docs/2.4/misc/password_encryptions.html
 #               https://akkadia.org/drepper/SHA-crypt.txt
